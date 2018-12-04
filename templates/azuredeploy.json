@@ -1,180 +1,163 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "virtualMachines_WinEVM123_name": {
-            "defaultValue": "WinEVM123",
-            "type": "String"
-        },
-        "networkInterfaces_winevm123_name": {
-            "defaultValue": "winevm123",
-            "type": "String"
-        },
-        "publicIPAddresses_winevm123_name": {
-            "defaultValue": "winevm123",
-            "type": "String"
-        },
-        "virtualMachines_WinEVM123_id": {
-            "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/cyberclass1rg/providers/Microsoft.Compute/images/WinEVMci",
-            "type": "String"
-        },
-        "virtualMachines_WinEVM123_id_1": {
-            "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/disks/WinEVM123_disk1_6146fe9a05984132b7651c5e12d86cf7",
-            "type": "String"
-        },
-        "virtualMachines_WinEVM123_id_2": {
-            "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/disks/WinEVM123_disk2_dde76432a9bd47e5835281566576bcbc",
-            "type": "String"
-        },
-        "networkInterfaces_winevm123_id": {
-            "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass1RG/providers/Microsoft.Network/virtualNetworks/DtlCyberClass_DevTestLab1/subnets/DtlCyberClass_DevTestLab1Subnet",
-            "type": "String"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualMachines_WinEVM123_name": {
+      "defaultValue": "WinEVM123",
+      "type": "String"
     },
-    "variables": {},
-    "resources": [
-        {
-            "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/virtualMachines/WinEVM123'.",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('virtualMachines_WinEVM123_name')]",
-            "apiVersion": "2018-06-01",
-            "location": "westeurope",
-            "tags": {
-                "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
-                "DevTestLab": "True",
-                "Project": "CyberClass",
-                "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
-            },
-            "scale": null,
-          "properties": {
-            "hardwareProfile": {
-              "vmSize": "Standard_D8_v3"
-            },
-            "storageProfile": {
-                "imageReference": {
-                  "id": "[resourceId('Microsoft.Compute/images', 'WinEVMci')]"
-                 },
-              "osDisk": {
-                "createOption": "FromImage"
-              }
-            },
-                "caching": "ReadWrite",
-                "managedDisk": {
-                  "id": "[parameters('virtualMachines_WinEVM123_id_1')]"
-                }
-              },
-              "dataDisks": [
-                {
-                  "lun": 1,
-                  "name": "[concat(parameters('virtualMachines_WinEVM123_name'),'_disk2_dde76432a9bd47e5835281566576bcbc')]",
-                  "createOption": "FromImage",
-                  "caching": "None",
-                  "managedDisk": {
-                    "id": "[parameters('virtualMachines_WinEVM123_id_2')]"
-                  }
-                }
-              ]
-            },
-            "osProfile": {
-              "computerName": "[parameters('virtualMachines_WinEVM123_name')]",
-              "adminUsername": "student",
-              "windowsConfiguration": {
-                "provisionVMAgent": true,
-                "enableAutomaticUpdates": true
-              },
-              "secrets": [],
-              "allowExtensionOperations": true
-            },
-            "networkProfile": {
-              "networkInterfaces": [
-                {
-                  "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_winevm123_name'))]"
-                }
-              ]
-            }
+    "networkInterfaces_winevm123_name": {
+      "defaultValue": "winevm123",
+      "type": "String"
+    },
+    "publicIPAddresses_winevm123_name": {
+      "defaultValue": "winevm123",
+      "type": "String"
+    },
+    "virtualMachines_WinEVM123_id": {
+      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/cyberclass1rg/providers/Microsoft.Compute/images/WinEVMci",
+      "type": "String"
+    },
+    "virtualMachines_WinEVM123_id_1": {
+      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/disks/WinEVM123_disk1_6146fe9a05984132b7651c5e12d86cf7",
+      "type": "String"
+    },
+    "virtualMachines_WinEVM123_id_2": {
+      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/disks/WinEVM123_disk2_dde76432a9bd47e5835281566576bcbc",
+      "type": "String"
+    },
+    "networkInterfaces_winevm123_id": {
+      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass1RG/providers/Microsoft.Network/virtualNetworks/DtlCyberClass_DevTestLab1/subnets/DtlCyberClass_DevTestLab1Subnet",
+      "type": "String"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/virtualMachines/WinEVM123'.",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('virtualMachines_WinEVM123_name')]",
+      "apiVersion": "2018-06-01",
+      "location": "westeurope",
+      "tags": {
+        "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
+        "DevTestLab": "True",
+        "Project": "CyberClass",
+        "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
+      },
+      "scale": null,
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_D8_v3"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "id": "[resourceId('Microsoft.Compute/images', 'WinEVMci')]"
           },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_winevm123_name'))]"
-            ]
+          "osDisk": {
+            "createOption": "FromImage"
+          }
         },
-        {
-            "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Network/networkInterfaces/winevm123'.",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('networkInterfaces_winevm123_name')]",
-            "apiVersion": "2018-08-01",
-            "location": "westeurope",
-            "tags": {
-                "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
-                "DevTestLab": "True",
-                "Project": "CyberClass",
-                "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
-            },
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "35a5fbe5-813d-4933-88c4-8aa645c0292f",
-                "ipConfigurations": [
-                    {
-                        "name": "NicIPConfigName1",
-                        "etag": "W/\"e129c3e5-5e82-450d-a2b8-2f8f1d91728c\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "privateIPAddress": "10.0.0.4",
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_winevm123_name'))]"
-                            },
-                            "subnet": {
-                                "id": "[parameters('networkInterfaces_winevm123_id')]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": [],
-                    "appliedDnsServers": []
-                },
-                "enableAcceleratedNetworking": false,
-                "enableIPForwarding": false,
-                "primary": true,
-                "tapConfigurations": []
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_winevm123_name'))]"
-            ]
+        "osProfile": {
+          "computerName": "[parameters('virtualMachines_WinEVM123_name')]",
+          "adminUsername": "student",
+          "windowsConfiguration": {
+            "provisionVMAgent": true,
+            "enableAutomaticUpdates": true
+          },
+          "secrets": [],
+          "allowExtensionOperations": true
         },
-        {
-            "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Network/publicIPAddresses/winevm123'.",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "sku": {
-                "name": "Basic",
-                "tier": "Regional"
-            },
-            "name": "[parameters('publicIPAddresses_winevm123_name')]",
-            "apiVersion": "2018-08-01",
-            "location": "westeurope",
-            "tags": {
-                "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
-                "DevTestLab": "True",
-                "Project": "CyberClass",
-                "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
-            },
-            "scale": null,
-            "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "e14f277c-3141-47b1-a5fd-9e00a97339d2",
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4,
-                "dnsSettings": {
-                    "domainNameLabel": "[parameters('publicIPAddresses_winevm123_name')]",
-                    "fqdn": "[concat(parameters('publicIPAddresses_winevm123_name'),'.westeurope.cloudapp.azure.com')]"
-                },
-                "ipTags": []
-            },
-            "dependsOn": []
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_winevm123_name'))]"
+            }
+          ]
         }
-    ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_winevm123_name'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Network/networkInterfaces/winevm123'.",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[parameters('networkInterfaces_winevm123_name')]",
+      "apiVersion": "2018-08-01",
+      "location": "westeurope",
+      "tags": {
+        "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
+        "DevTestLab": "True",
+        "Project": "CyberClass",
+        "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
+      },
+      "scale": null,
+      "properties": {
+        "provisioningState": "Succeeded",
+        "resourceGuid": "35a5fbe5-813d-4933-88c4-8aa645c0292f",
+        "ipConfigurations": [
+          {
+            "name": "NicIPConfigName1",
+            "etag": "W/\"e129c3e5-5e82-450d-a2b8-2f8f1d91728c\"",
+            "properties": {
+              "provisioningState": "Succeeded",
+              "privateIPAddress": "10.0.0.4",
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_winevm123_name'))]"
+              },
+              "subnet": {
+                "id": "[parameters('networkInterfaces_winevm123_id')]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4"
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": [],
+          "appliedDnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "primary": true,
+        "tapConfigurations": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_winevm123_name'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Network/publicIPAddresses/winevm123'.",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "sku": {
+        "name": "Basic",
+        "tier": "Regional"
+      },
+      "name": "[parameters('publicIPAddresses_winevm123_name')]",
+      "apiVersion": "2018-08-01",
+      "location": "westeurope",
+      "tags": {
+        "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
+        "DevTestLab": "True",
+        "Project": "CyberClass",
+        "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
+      },
+      "scale": null,
+      "properties": {
+        "provisioningState": "Succeeded",
+        "resourceGuid": "e14f277c-3141-47b1-a5fd-9e00a97339d2",
+        "publicIPAddressVersion": "IPv4",
+        "publicIPAllocationMethod": "Dynamic",
+        "idleTimeoutInMinutes": 4,
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('publicIPAddresses_winevm123_name')]",
+          "fqdn": "[concat(parameters('publicIPAddresses_winevm123_name'),'.westeurope.cloudapp.azure.com')]"
+        },
+        "ipTags": []
+      },
+      "dependsOn": []
+    }
+  ]
 }
