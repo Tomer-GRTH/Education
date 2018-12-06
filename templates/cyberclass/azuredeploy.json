@@ -2,162 +2,172 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "virtualMachines_WinEVM123_name": {
-      "defaultValue": "WinEVM123",
-      "type": "String"
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "User name for the Virtual Machine."
+      }
     },
-    "networkInterfaces_winevm123_name": {
-      "defaultValue": "winevm123",
-      "type": "String"
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
     },
-    "publicIPAddresses_winevm123_name": {
-      "defaultValue": "winevm123",
-      "type": "String"
+    "vmName": {
+      "type": "string"
     },
-    "virtualMachines_WinEVM123_id": {
-      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/cyberclass1rg/providers/Microsoft.Compute/images/WinEVMci",
-      "type": "String"
+    "dnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+      }
     },
-    "virtualMachines_WinEVM123_id_1": {
-      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/disks/WinEVM123_disk1_6146fe9a05984132b7651c5e12d86cf7",
-      "type": "String"
-    },
-    "virtualMachines_WinEVM123_id_2": {
-      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/disks/WinEVM123_disk2_dde76432a9bd47e5835281566576bcbc",
-      "type": "String"
-    },
-    "networkInterfaces_winevm123_id": {
-      "defaultValue": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass1RG/providers/Microsoft.Network/virtualNetworks/DtlCyberClass_DevTestLab1/subnets/DtlCyberClass_DevTestLab1Subnet",
-      "type": "String"
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
     }
   },
-  "variables": {},
+  "variables": {
+    "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
+    "nicName": "[concat(parameters('vmName'), '-nic1')]",
+    "addressPrefix": "10.1.1.0/28",
+    "subnetName": "Subnet1",
+    "subnetPrefix": "10.1.1.0/28",
+    "storageAccountType": "Standard_LRS",
+    "publicIPAddressName": "[concat(parameters('vmName'), '-pip1')]",
+    "publicIPAddressType": "Dynamic",
+    "vmSize": "Standard_A2",
+    "virtualNetworkName": "[concat(parameters('vmName'), '-vnet')]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+  },
   "resources": [
     {
-      "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Compute/virtualMachines/WinEVM123'.",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[parameters('virtualMachines_WinEVM123_name')]",
-      "apiVersion": "2018-06-01",
-      "location": "westeurope",
-      "tags": {
-        "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
-        "DevTestLab": "True",
-        "Project": "CyberClass",
-        "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2017-06-01",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[variables('storageAccountType')]"
       },
-      "scale": null,
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "apiVersion": "2017-04-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-04-01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2017-04-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('nicName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+              },
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('vmName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+      ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "Standard_D8_v3"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "id": "[resourceId('Microsoft.Compute/images', 'WinEVMci')]"
-          },
-          "osDisk": {
-            "createOption": "FromImage"
-          }
+          "vmSize": "[variables('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[parameters('virtualMachines_WinEVM123_name')]",
-          "adminUsername": "student",
-          "windowsConfiguration": {
-            "provisionVMAgent": true,
-            "enableAutomaticUpdates": true
+          "computerName": "[parameters('vmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "osDisk": {
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "Standard_LRS"
+            }
           },
-          "secrets": [],
-          "allowExtensionOperations": true
+          "imageReference": {
+            "id": "/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass1RG/providers/Microsoft.Compute/images/WinEVMci"
+          }
         },
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_winevm123_name'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
             }
           ]
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_winevm123_name'))]"
-      ]
-    },
-    {
-      "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Network/networkInterfaces/winevm123'.",
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "[parameters('networkInterfaces_winevm123_name')]",
-      "apiVersion": "2018-08-01",
-      "location": "westeurope",
-      "tags": {
-        "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
-        "DevTestLab": "True",
-        "Project": "CyberClass",
-        "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
-      },
-      "scale": null,
-      "properties": {
-        "provisioningState": "Succeeded",
-        "resourceGuid": "35a5fbe5-813d-4933-88c4-8aa645c0292f",
-        "ipConfigurations": [
-          {
-            "name": "NicIPConfigName1",
-            "etag": "W/\"e129c3e5-5e82-450d-a2b8-2f8f1d91728c\"",
-            "properties": {
-              "provisioningState": "Succeeded",
-              "privateIPAddress": "10.0.0.4",
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_winevm123_name'))]"
-              },
-              "subnet": {
-                "id": "[parameters('networkInterfaces_winevm123_id')]"
-              },
-              "primary": true,
-              "privateIPAddressVersion": "IPv4"
-            }
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
           }
-        ],
-        "dnsSettings": {
-          "dnsServers": [],
-          "appliedDnsServers": []
-        },
-        "enableAcceleratedNetworking": false,
-        "enableIPForwarding": false,
-        "primary": true,
-        "tapConfigurations": []
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_winevm123_name'))]"
-      ]
-    },
-    {
-      "comments": "Generalized from resource: '/subscriptions/b3ed2674-0737-4f71-b98b-f73f5e81d071/resourceGroups/CyberClass_DevTestLab1-WinEVM123-282142/providers/Microsoft.Network/publicIPAddresses/winevm123'.",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "sku": {
-        "name": "Basic",
-        "tier": "Regional"
-      },
-      "name": "[parameters('publicIPAddresses_winevm123_name')]",
-      "apiVersion": "2018-08-01",
-      "location": "westeurope",
-      "tags": {
-        "hidden-DevTestLabs-LabUId": "f9fd7b06-6796-4072-a581-cd06c8ba4ef4",
-        "DevTestLab": "True",
-        "Project": "CyberClass",
-        "hidden-DevTestLabs-LogicalResourceUId": "9505b197-c912-430a-8a43-e5f30ea9cb11"
-      },
-      "scale": null,
-      "properties": {
-        "provisioningState": "Succeeded",
-        "resourceGuid": "e14f277c-3141-47b1-a5fd-9e00a97339d2",
-        "publicIPAddressVersion": "IPv4",
-        "publicIPAllocationMethod": "Dynamic",
-        "idleTimeoutInMinutes": 4,
-        "dnsSettings": {
-          "domainNameLabel": "[parameters('publicIPAddresses_winevm123_name')]",
-          "fqdn": "[concat(parameters('publicIPAddresses_winevm123_name'),'.westeurope.cloudapp.azure.com')]"
-        },
-        "ipTags": []
-      },
-      "dependsOn": []
+        }
+      }
     }
-  ]
+  ],
+  "outputs": {
+    "hostname": {
+      "type": "string",
+      "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+    },
+    "sshCommand": {
+      "type": "string",
+      "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName')).dnsSettings.fqdn)]"
+    }
+  }
 }
